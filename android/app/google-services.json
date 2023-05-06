@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "768166060328",
+    "project_id": "skarbonka02",
+    "storage_bucket": "skarbonka02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:768166060328:android:580b757566fcacaf0d301d",
+        "android_client_info": {
+          "package_name": "com.dawidskalski.skarbonka_v2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "768166060328-utop5rq4ogl25t7pn34agk2iho3ppn93.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-oXT0unTnqAwmAs9w1mXXAR2RUfJGPAY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "768166060328-lhdaqg3p2opsocnmdtmmmou6mvk6lutl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "768166060328-lqqg5egm5l1lcehdf2s362i6p1m5b6n8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dawidskalski.skarbonkaV2"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
