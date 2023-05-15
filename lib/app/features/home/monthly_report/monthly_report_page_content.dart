@@ -7,8 +7,12 @@ class MonthlyReportPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('0'),
+    return Center(
+      child: Column(
+        children: const [
+          Text('0'),
+        ],
+      ),
     );
   }
 }

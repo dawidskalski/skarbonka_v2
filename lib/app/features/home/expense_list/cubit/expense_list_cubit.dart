@@ -7,22 +7,23 @@ part 'expense_list_state.dart';
 class ExpenseListCubit extends Cubit<ExpenseListState> {
   ExpenseListCubit()
       : super(ExpenseListState(
-          documents: [],
+          expenditureListDocuments: [],
+          wantSpendDocuments: [],
           errorMessage: '',
           loading: false,
         ));
 
   StreamSubscription? _streamSubscription;
 
-//Do wydania --------------------------------------wantspend
-  Future<void> wantspend() async {
+  Future<void> start() async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
     }
     emit(
       ExpenseListState(
-        documents: [],
+        expenditureListDocuments: [],
+        wantSpendDocuments: [],
         errorMessage: '',
         loading: true,
       ),
@@ -36,7 +37,8 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
         .listen(
       (data) {
         emit(ExpenseListState(
-          documents: data.docs,
+          wantSpendDocuments: data.docs,
+          expenditureListDocuments: [],
           errorMessage: '',
           loading: false,
         ));
@@ -44,27 +46,13 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
     )..onError(
         (error) {
           emit(ExpenseListState(
-            documents: [],
+            wantSpendDocuments: [],
+            expenditureListDocuments: [],
             errorMessage: error.toString(),
             loading: false,
           ));
         },
       );
-  }
-
-  //Lista wydatków --------------------------------------expenditure
-  Future<void> expenditure() async {
-    final userdID = FirebaseAuth.instance.currentUser?.uid;
-    if (userdID == null) {
-      throw Exception('error');
-    }
-    emit(
-      ExpenseListState(
-        documents: [],
-        errorMessage: '',
-        loading: true,
-      ),
-    );
 
     _streamSubscription = FirebaseFirestore.instance
         .collection('users')
@@ -74,7 +62,8 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
         .listen(
       (data) {
         emit(ExpenseListState(
-          documents: data.docs,
+          expenditureListDocuments: data.docs,
+          wantSpendDocuments: [],
           errorMessage: '',
           loading: false,
         ));
@@ -82,7 +71,8 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
     )..onError(
         (error) {
           emit(ExpenseListState(
-            documents: [],
+            expenditureListDocuments: [],
+            wantSpendDocuments: [],
             errorMessage: error.toString(),
             loading: false,
           ));
@@ -90,28 +80,40 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
       );
   }
 
+  //Lista wydatków  --------------------------------------expenditure
+  // Future<void> expenditureListStart() async {
+  //   final userdID = FirebaseAuth.instance.currentUser?.uid;
+  //   if (userdID == null) {
+  //     throw Exception('error');
+  //   }
+  //   emit(
+  //     ExpenseListState(
+  //       documents: [],
+  //       errorMessage: '',
+  //       loading: true,
+  //     ),
+  //   );
+
+  // }
+
 // Dodawanie wydatku --------------------------------add expenditure
-  Future<void> addExpenditure(expenseName) async {
+  Future<void> addToExpenditureList(expenseName) async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
     }
-    try {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userdID)
-          .collection('expenditure')
-          .add({
-        'name': expenseName.text,
-      });
-    } catch (error) {
-      emit(ExpenseListState(
-          documents: null, errorMessage: error.toString(), loading: false));
-    }
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userdID)
+        .collection('expenditure')
+        .add({
+      'name': expenseName.text,
+    });
   }
 
 // usuwanie wydatku --------------------------- remove expenditure
-  Future<void> remove({required String id}) async {
+  Future<void> removePositionOnExpenditureList({required String id}) async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');

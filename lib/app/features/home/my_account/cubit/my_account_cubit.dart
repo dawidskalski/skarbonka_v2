@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:js_util';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -73,13 +72,21 @@ class MyAccountCubit extends Cubit<MyAccountState> {
   }
 
   Future<void> addSubtractionResult({
-    required result,
+    required earningsController,
     required savingsController,
+    var result,
+    var earningControllerValue,
+    var savingsControllerValue,
   }) async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
     }
+
+    earningControllerValue = int.parse(earningsController);
+    savingsControllerValue = int.parse(savingsController);
+    result = earningControllerValue - savingsControllerValue;
+
     FirebaseFirestore.instance
         .collection('users')
         .doc(userdID)
@@ -87,22 +94,9 @@ class MyAccountCubit extends Cubit<MyAccountState> {
         .add(
       {
         'value': result,
-        'saving': savingsController,
+        'saving': savingsControllerValue,
       },
     );
-  }
-
-  Future<void> addImageUser({required image}) async {
-    final UserID = FirebaseAuth.instance.currentUser?.uid;
-    if (UserID == null) {
-      throw Exception('error');
-    }
-
-    FirebaseFirestore.instance
-        .collection('user')
-        .doc(UserID)
-        .collection('profileImage')
-        .get();
   }
 
   @override
