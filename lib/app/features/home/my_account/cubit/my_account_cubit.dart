@@ -87,16 +87,21 @@ class MyAccountCubit extends Cubit<MyAccountState> {
     savingsControllerValue = int.parse(savingsController);
     result = earningControllerValue - savingsControllerValue;
 
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(userdID)
-        .collection('wantspend')
-        .add(
-      {
-        'value': result,
-        'saving': savingsControllerValue,
-      },
-    );
+    try {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userdID)
+          .collection('wantspend')
+          .add(
+        {
+          'value': result,
+          'saving': savingsControllerValue,
+        },
+      );
+    } catch (error) {
+      emit(MyAccountState(
+          documents: [], errorMessage: error.toString(), loading: false));
+    }
   }
 
   @override
