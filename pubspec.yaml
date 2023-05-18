@@ -41,6 +41,8 @@ dependencies:
   convex_bottom_bar: ^3.2.0
   image_picker: ^0.8.7+4
   flutter_bloc: ^8.1.2
+  pie_chart: ^5.3.2
+
 
 
 dev_dependencies:

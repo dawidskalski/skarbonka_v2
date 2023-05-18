@@ -29,11 +29,6 @@ class _LoginPageState extends State<LoginPage> {
           Column(
             children: [
               Container(
-                // child: CircleAvatar(
-                //   backgroundColor: Colors.orange,
-                //   backgroundImage: AssetImage('images/piggy.png'),
-                //   radius: 30,
-                // ),
                 width: width,
                 height: height * 0.2,
                 decoration: const BoxDecoration(

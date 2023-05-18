@@ -7,28 +7,29 @@ part 'expense_list_state.dart';
 class ExpenseListCubit extends Cubit<ExpenseListState> {
   ExpenseListCubit()
       : super(ExpenseListState(
-          documents: [],
+          expenditureListDocuments: [],
+          wantSpendDocuments: [],
           errorMessage: '',
           loading: false,
         ));
+  StreamSubscription? _wannaspendSubscription;
+  StreamSubscription? _expenditureSubscription;
 
-  StreamSubscription? _streamSubscription;
-
-//Do wydania --------------------------------------wantspend
-  Future<void> wantspend() async {
+  Future<void> start() async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
     }
     emit(
       ExpenseListState(
-        documents: [],
+        wantSpendDocuments: [],
+        expenditureListDocuments: [],
         errorMessage: '',
         loading: true,
       ),
     );
 
-    _streamSubscription = FirebaseFirestore.instance
+    _wannaspendSubscription = FirebaseFirestore.instance
         .collection('users')
         .doc(userdID)
         .collection('wantspend')
@@ -36,7 +37,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
         .listen(
       (data) {
         emit(ExpenseListState(
-          documents: data.docs,
+          wantSpendDocuments: data.docs,
           errorMessage: '',
           loading: false,
         ));
@@ -44,29 +45,13 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
     )..onError(
         (error) {
           emit(ExpenseListState(
-            documents: [],
+            wantSpendDocuments: [],
             errorMessage: error.toString(),
             loading: false,
           ));
         },
       );
-  }
-
-  //Lista wydatków --------------------------------------expenditure
-  Future<void> expenditure() async {
-    final userdID = FirebaseAuth.instance.currentUser?.uid;
-    if (userdID == null) {
-      throw Exception('error');
-    }
-    emit(
-      ExpenseListState(
-        documents: [],
-        errorMessage: '',
-        loading: true,
-      ),
-    );
-
-    _streamSubscription = FirebaseFirestore.instance
+    _expenditureSubscription = FirebaseFirestore.instance
         .collection('users')
         .doc(userdID)
         .collection('expenditure')
@@ -74,7 +59,8 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
         .listen(
       (data) {
         emit(ExpenseListState(
-          documents: data.docs,
+          expenditureListDocuments: data.docs,
+          wantSpendDocuments: state.wantSpendDocuments,
           errorMessage: '',
           loading: false,
         ));
@@ -82,7 +68,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
     )..onError(
         (error) {
           emit(ExpenseListState(
-            documents: [],
+            expenditureListDocuments: [],
             errorMessage: error.toString(),
             loading: false,
           ));
@@ -91,11 +77,12 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
   }
 
 // Dodawanie wydatku --------------------------------add expenditure
-  Future<void> addExpenditure(expenseName) async {
+  Future<void> addToExpenditureList(expenseName) async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
     }
+
     try {
       FirebaseFirestore.instance
           .collection('users')
@@ -105,13 +92,12 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
         'name': expenseName.text,
       });
     } catch (error) {
-      emit(ExpenseListState(
-          documents: null, errorMessage: error.toString(), loading: false));
+      ExpenseListState(errorMessage: error.toString());
     }
   }
 
 // usuwanie wydatku --------------------------- remove expenditure
-  Future<void> remove({required String id}) async {
+  Future<void> removePositionOnExpenditureList({required String id}) async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
@@ -126,7 +112,8 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
 
   @override
   Future<void> close() {
-    _streamSubscription?.cancel();
+    _wannaspendSubscription?.cancel();
+    _expenditureSubscription?.cancel();
     return super.close();
   }
 }
