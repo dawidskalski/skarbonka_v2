@@ -10,7 +10,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
           expenditureListDocuments: [],
           wantSpendDocuments: [],
           errorMessage: '',
-          loading: false,
+          loadingErrorOccured: false,
         ));
   StreamSubscription? _wannaspendSubscription;
   StreamSubscription? _expenditureSubscription;
@@ -25,7 +25,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
         wantSpendDocuments: [],
         expenditureListDocuments: [],
         errorMessage: '',
-        loading: true,
+        loadingErrorOccured: true,
       ),
     );
 
@@ -38,8 +38,6 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
       (data) {
         emit(ExpenseListState(
           wantSpendDocuments: data.docs,
-          errorMessage: '',
-          loading: false,
         ));
       },
     )..onError(
@@ -47,10 +45,11 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
           emit(ExpenseListState(
             wantSpendDocuments: [],
             errorMessage: error.toString(),
-            loading: false,
+            loadingErrorOccured: true,
           ));
         },
       );
+
     _expenditureSubscription = FirebaseFirestore.instance
         .collection('users')
         .doc(userdID)
@@ -61,8 +60,6 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
         emit(ExpenseListState(
           expenditureListDocuments: data.docs,
           wantSpendDocuments: state.wantSpendDocuments,
-          errorMessage: '',
-          loading: false,
         ));
       },
     )..onError(
@@ -70,14 +67,14 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
           emit(ExpenseListState(
             expenditureListDocuments: [],
             errorMessage: error.toString(),
-            loading: false,
+            loadingErrorOccured: true,
           ));
         },
       );
   }
 
 // Dodawanie wydatku --------------------------------add expenditure
-  Future<void> addToExpenditureList(expenseName) async {
+  Future<void> addToExpenditureList(String expenseName) async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
@@ -89,10 +86,12 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
           .doc(userdID)
           .collection('expenditure')
           .add({
-        'name': expenseName.text,
+        'name': expenseName,
       });
     } catch (error) {
-      ExpenseListState(errorMessage: error.toString());
+      emit(ExpenseListState(
+          addErrorOccured: true, errorMessage: error.toString()));
+      start();
     }
   }
 
@@ -102,12 +101,18 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
     if (userdID == null) {
       throw Exception('error');
     }
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(userdID)
-        .collection('expenditure')
-        .doc(id)
-        .delete();
+    try {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userdID)
+          .collection('expenditure')
+          .doc(id)
+          .delete();
+    } catch (error) {
+      emit(ExpenseListState(
+          removeErrorOccured: true, errorMessage: error.toString()));
+      start();
+    }
   }
 
   @override

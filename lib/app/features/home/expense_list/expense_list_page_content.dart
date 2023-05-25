@@ -12,7 +12,7 @@ class ExpenseListPageContent extends StatefulWidget {
 }
 
 class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
-  var expenseNameController = TextEditingController();
+  var expenseNameController = '';
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +23,17 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
       child: BlocListener<ExpenseListCubit, ExpenseListState>(
         listener: (context, state) {
           if (state.errorMessage.isNotEmpty) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorMessage)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Something went wrong: ${state.errorMessage}'),
+              backgroundColor: Colors.red,
+            ));
           }
         },
         child: BlocBuilder<ExpenseListCubit, ExpenseListState>(
           builder: (context, state) {
-            if (state.loading) {
+            if (state.loadingErrorOccured ||
+                state.removeErrorOccured ||
+                state.addErrorOccured) {
               return Center(
                 child: Center(
                     child: Column(
@@ -43,12 +47,6 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
               );
             }
 
-            if (state.errorMessage.isNotEmpty) {
-              return Center(
-                child: Text('Something went wrong: ${state.errorMessage}'),
-              );
-            }
-
             final expenditureListDocuments = state.expenditureListDocuments;
             final wantSpendDocuments = state.wantSpendDocuments;
 
@@ -57,23 +55,28 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                 onPressed: () {
                   final alert = AlertDialog(
                     actions: [
-                      TextButton(
-                        onPressed: () {
-                          context
-                              .read<ExpenseListCubit>()
-                              .addToExpenditureList(expenseNameController);
+                      ElevatedButton(
+                        onPressed: expenseNameController.isEmpty
+                            ? null
+                            : () {
+                                context
+                                    .read<ExpenseListCubit>()
+                                    .addToExpenditureList(
+                                        expenseNameController);
 
-                          expenseNameController.clear();
-
-                          Navigator.of(context)
-                              .pop(const ExpenseListPageContent());
-                        },
+                                Navigator.of(context)
+                                    .pop(const ExpenseListPageContent());
+                              },
                         child: const Text('Dodaj'),
                       )
                     ],
                     title: const Text('Rodzaj wydatku'),
                     content: TextField(
-                      controller: expenseNameController,
+                      onChanged: (newValue) {
+                        setState(() {
+                          expenseNameController = newValue;
+                        });
+                      },
                       decoration: const InputDecoration(
                         label: Text('Wydatek'),
                         hintText: 'np:.. Rachunki',
@@ -195,6 +198,10 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                                         .read<ExpenseListCubit>()
                                         .removePositionOnExpenditureList(
                                             id: document.id);
+                                  },
+                                  confirmDismiss: (direction) async {
+                                    return direction ==
+                                        DismissDirection.endToStart;
                                   },
                                 ),
                               ],
