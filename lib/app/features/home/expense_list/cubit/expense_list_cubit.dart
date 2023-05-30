@@ -74,7 +74,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
   }
 
 // Dodawanie wydatku --------------------------------add expenditure
-  Future<void> addToExpenditureList(String expenseName) async {
+  Future<void> addToExpenditureList(expenseName) async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
@@ -86,7 +86,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
           .doc(userdID)
           .collection('expenditure')
           .add({
-        'name': expenseName,
+        'name': expenseName.text,
       });
     } catch (error) {
       emit(ExpenseListState(

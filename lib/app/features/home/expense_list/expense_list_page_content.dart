@@ -12,7 +12,19 @@ class ExpenseListPageContent extends StatefulWidget {
 }
 
 class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
-  var expenseNameController = '';
+  var expenseNameController = TextEditingController();
+  var isButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    expenseNameController = TextEditingController();
+    expenseNameController.addListener(() {
+      setState(() {
+        isButtonEnabled = expenseNameController.text.isNotEmpty;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,27 +68,28 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                   final alert = AlertDialog(
                     actions: [
                       ElevatedButton(
-                        onPressed: expenseNameController.isEmpty
-                            ? null
-                            : () {
+                        onPressed: (isButtonEnabled == true)
+                            ? () {
+                                setState(() {
+                                  isButtonEnabled = true;
+                                });
                                 context
                                     .read<ExpenseListCubit>()
                                     .addToExpenditureList(
                                         expenseNameController);
 
+                                expenseNameController.clear();
+
                                 Navigator.of(context)
                                     .pop(const ExpenseListPageContent());
-                              },
+                              }
+                            : null,
                         child: const Text('Dodaj'),
                       )
                     ],
                     title: const Text('Rodzaj wydatku'),
                     content: TextField(
-                      onChanged: (newValue) {
-                        setState(() {
-                          expenseNameController = newValue;
-                        });
-                      },
+                      controller: expenseNameController,
                       decoration: const InputDecoration(
                         label: Text('Wydatek'),
                         hintText: 'np:.. Rachunki',
