@@ -73,27 +73,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
       );
   }
 
-// Dodawanie wydatku --------------------------------add expenditure
-  Future<void> addToExpenditureList(expenseName) async {
-    final userdID = FirebaseAuth.instance.currentUser?.uid;
-    if (userdID == null) {
-      throw Exception('error');
-    }
 
-    try {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userdID)
-          .collection('expenditure')
-          .add({
-        'name': expenseName.text,
-      });
-    } catch (error) {
-      emit(ExpenseListState(
-          addErrorOccured: true, errorMessage: error.toString()));
-      start();
-    }
-  }
 
 // usuwanie wydatku --------------------------- remove expenditure
   Future<void> removePositionOnExpenditureList({required String id}) async {
