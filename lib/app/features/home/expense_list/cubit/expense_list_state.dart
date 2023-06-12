@@ -5,16 +5,12 @@ class ExpenseListState {
       expenditureListDocuments;
   final List<QueryDocumentSnapshot<Map<String, dynamic>>>? wantSpendDocuments;
   final String errorMessage;
-  final bool loadingErrorOccured;
-  final bool removeErrorOccured;
-  final bool addErrorOccured;
+  final bool loading;
 
   ExpenseListState({
     this.expenditureListDocuments,
     this.wantSpendDocuments,
     this.errorMessage = '',
-    this.loadingErrorOccured = false,
-    this.removeErrorOccured = false,
-    this.addErrorOccured = false,
+    this.loading = false,
   });
 }

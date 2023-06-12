@@ -6,8 +6,8 @@ class RootState {
   final bool loading;
 
   RootState({
-    required this.user,
-    required this.errorMessage,
-    required this.loading,
+    this.user,
+    this.errorMessage = '',
+    this.loading = false,
   });
 }

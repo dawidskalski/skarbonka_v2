@@ -15,20 +15,12 @@ class RootCubit extends Cubit<RootState> {
   StreamSubscription? _streamSubscription;
 
   Future<void> start() async {
-    emit(RootState(
-      user: null,
-      errorMessage: '',
-      loading: false,
-    ));
+    emit(RootState(user: null));
 
     _streamSubscription = FirebaseAuth.instance.authStateChanges().listen(
       (user) {
         emit(
-          RootState(
-            user: user,
-            errorMessage: '',
-            loading: false,
-          ),
+          RootState(user: user),
         );
       },
     )..onError(
@@ -37,7 +29,6 @@ class RootCubit extends Cubit<RootState> {
             RootState(
               user: null,
               errorMessage: error,
-              loading: false,
             ),
           );
         },

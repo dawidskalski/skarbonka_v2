@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skarbonka_v2/app/features/home/add_expense/page/add_expense_page_content.dart';
-
 import 'package:skarbonka_v2/app/features/home/expense_list/cubit/expense_list_cubit.dart';
+import 'package:skarbonka_v2/app/features/home/expense_list/widgets/expenditure_widget.dart';
 
 class ExpenseListPageContent extends StatefulWidget {
   const ExpenseListPageContent({
@@ -22,24 +22,14 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
       create: (context) => ExpenseListCubit()..start(),
       child: BlocBuilder<ExpenseListCubit, ExpenseListState>(
         builder: (context, state) {
+          if (state.loading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
           if (state.errorMessage.isNotEmpty) {
             return Center(
                 child: Text('Something went wrong: ${state.errorMessage}'));
-          }
-          if (state.loadingErrorOccured ||
-              state.removeErrorOccured ||
-              state.addErrorOccured) {
-            return Center(
-              child: Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 10),
-                  Text('Loading'),
-                ],
-              )),
-            );
           }
 
           final expenditureListDocuments = state.expenditureListDocuments;
@@ -172,97 +162,6 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class ExpenditureWidget extends StatelessWidget {
-  const ExpenditureWidget({
-    super.key,
-    required this.width,
-    required this.height,
-    required this.doc,
-  });
-
-  final double width;
-  final double height;
-  final String doc;
-  // final concreteExpense = TextEditingController();
-  // final cost = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        margin: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(30),
-              bottomLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-              bottomRight: Radius.circular(15),
-            ),
-            border: Border.all(color: Colors.orange)),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: width * 0.12,
-                  height: height * 0.06,
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                SizedBox(
-                  width: width * 0.5,
-                  height: height * 0.06,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        doc,
-                        style:
-                            const TextStyle(fontSize: 16, color: Colors.orange),
-                        textAlign: TextAlign.center,
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  width: width * 0.20,
-                  height: height * 0.06,
-                  decoration: const BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                      bottomRight: Radius.circular(10),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.all(2.0),
-                        child: Text(
-                          '0 PLN',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

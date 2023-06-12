@@ -6,12 +6,9 @@ part 'expense_list_state.dart';
 
 class ExpenseListCubit extends Cubit<ExpenseListState> {
   ExpenseListCubit()
-      : super(ExpenseListState(
-          expenditureListDocuments: [],
-          wantSpendDocuments: [],
-          errorMessage: '',
-          loadingErrorOccured: false,
-        ));
+      : super(
+          ExpenseListState(loading: false),
+        );
   StreamSubscription? _wannaspendSubscription;
   StreamSubscription? _expenditureSubscription;
 
@@ -21,12 +18,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
       throw Exception('error');
     }
     emit(
-      ExpenseListState(
-        wantSpendDocuments: [],
-        expenditureListDocuments: [],
-        errorMessage: '',
-        loadingErrorOccured: true,
-      ),
+      ExpenseListState(loading: true),
     );
 
     _wannaspendSubscription = FirebaseFirestore.instance
@@ -43,9 +35,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
     )..onError(
         (error) {
           emit(ExpenseListState(
-            wantSpendDocuments: [],
-            errorMessage: error.toString(),
-            loadingErrorOccured: true,
+            errorMessage: error,
           ));
         },
       );
@@ -65,15 +55,11 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
     )..onError(
         (error) {
           emit(ExpenseListState(
-            expenditureListDocuments: [],
-            errorMessage: error.toString(),
-            loadingErrorOccured: true,
+            errorMessage: error,
           ));
         },
       );
   }
-
-
 
 // usuwanie wydatku --------------------------- remove expenditure
   Future<void> removePositionOnExpenditureList({required String id}) async {
@@ -89,8 +75,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
           .doc(id)
           .delete();
     } catch (error) {
-      emit(ExpenseListState(
-          removeErrorOccured: true, errorMessage: error.toString()));
+      emit(ExpenseListState(errorMessage: error.toString()));
       start();
     }
   }
