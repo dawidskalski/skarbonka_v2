@@ -52,6 +52,7 @@ class MyAccountCubit extends Cubit<MyAccountState> {
     } catch (error) {
       emit(MyAccountState(errorMessage: error.toString()));
     }
+    start();
   }
 
   Future<void> addSubtractionResult({
