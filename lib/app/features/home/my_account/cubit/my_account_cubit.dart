@@ -7,11 +7,7 @@ part 'my_account_state.dart';
 class MyAccountCubit extends Cubit<MyAccountState> {
   MyAccountCubit()
       : super(
-          MyAccountState(
-            documents: [],
-            errorMessage: '',
-            loading: false,
-          ),
+          MyAccountState(loading: false),
         );
 
   StreamSubscription? _streamSubscription;
@@ -21,11 +17,7 @@ class MyAccountCubit extends Cubit<MyAccountState> {
       throw Exception('error');
     }
     emit(
-      MyAccountState(
-        documents: [],
-        errorMessage: '',
-        loading: true,
-      ),
+      MyAccountState(loading: true),
     );
     _streamSubscription = FirebaseFirestore.instance
         .collection('users')
@@ -35,20 +27,12 @@ class MyAccountCubit extends Cubit<MyAccountState> {
         .listen(
       (data) {
         emit(
-          MyAccountState(
-            documents: data.docs,
-            errorMessage: '',
-            loading: false,
-          ),
+          MyAccountState(documents: data.docs),
         );
       },
     )..onError((error) {
         emit(
-          MyAccountState(
-            documents: [],
-            errorMessage: error,
-            loading: false,
-          ),
+          MyAccountState(errorMessage: error),
         );
       });
   }
@@ -66,9 +50,9 @@ class MyAccountCubit extends Cubit<MyAccountState> {
           .doc(id)
           .delete();
     } catch (error) {
-      emit(MyAccountState(
-          documents: [], errorMessage: error.toString(), loading: false));
+      emit(MyAccountState(errorMessage: error.toString()));
     }
+    start();
   }
 
   Future<void> addSubtractionResult({
@@ -99,8 +83,7 @@ class MyAccountCubit extends Cubit<MyAccountState> {
         },
       );
     } catch (error) {
-      emit(MyAccountState(
-          documents: [], errorMessage: error.toString(), loading: false));
+      emit(MyAccountState(errorMessage: error.toString()));
     }
   }
 

@@ -177,11 +177,39 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                               ),
                             Column(
                               children: [
-                                for (final document in documents) ...[
-                                  if (isCreatingValue == false)
+                                if (documents != null)
+                                  for (final document in documents) ...[
+                                    if (isCreatingValue == false)
+                                      Container(
+                                        padding: const EdgeInsets.all(5),
+                                        margin: const EdgeInsets.all(5),
+                                        width: width * 0.8,
+                                        height: height * 0.10,
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.orange),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            const Text(
+                                                'Miesięcznie do wydania mam: '),
+                                            Text(
+                                              '${document['value']} PLN',
+                                              style: const TextStyle(
+                                                  fontSize: 30,
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     Container(
-                                      padding: const EdgeInsets.all(5),
                                       margin: const EdgeInsets.all(5),
+                                      padding: const EdgeInsets.all(5),
                                       width: width * 0.8,
                                       height: height * 0.10,
                                       decoration: BoxDecoration(
@@ -194,62 +222,39 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           const Text(
-                                              'Miesięcznie do wydania mam: '),
+                                              'Miesięcznie oszczędzam: '),
                                           Text(
-                                            '${document['value']} PLN',
+                                            '${document['saving']} PLN',
                                             style: const TextStyle(
                                                 fontSize: 30,
-                                                color: Colors.red,
+                                                color: Color.fromARGB(
+                                                    255, 24, 131, 28),
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ],
                                       ),
                                     ),
-                                  Container(
-                                    margin: const EdgeInsets.all(5),
-                                    padding: const EdgeInsets.all(5),
-                                    width: width * 0.8,
-                                    height: height * 0.10,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.orange),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        const Text('Miesięcznie oszczędzam: '),
-                                        Text(
-                                          '${document['saving']} PLN',
-                                          style: const TextStyle(
-                                              fontSize: 30,
-                                              color: Color.fromARGB(
-                                                  255, 24, 131, 28),
-                                              fontWeight: FontWeight.bold),
+                                    if (isCreatingValue == false)
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            top: 10, bottom: 10),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              context
+                                                  .read<MyAccountCubit>()
+                                                  .remove(id: document.id);
+                                              isCreatingValue = true;
+                                            });
+                                          },
+                                          child: const Text(
+                                            'Zmień',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  if (isCreatingValue == false)
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                          top: 10, bottom: 10),
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            context
-                                                .read<MyAccountCubit>()
-                                                .remove(id: document.id);
-                                            isCreatingValue = true;
-                                          });
-                                        },
-                                        child: const Text(
-                                          'Zmień',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    )
-                                ],
+                                      )
+                                  ],
                               ],
                             )
                           ],
