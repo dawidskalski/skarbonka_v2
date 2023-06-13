@@ -32,8 +32,8 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                 child: Text('Something went wrong: ${state.errorMessage}'));
           }
 
-          final expenditureListDocuments = state.expenditureListDocuments;
-          final wantSpendDocuments = state.wantSpendDocuments;
+          final expenditureListItemModels = state.expenditureListDocuments;
+          final wantSpendItemModels = state.wantSpendDocuments;
 
           return Scaffold(
             floatingActionButton: FloatingActionButton(
@@ -103,19 +103,18 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                                   ),
                                   Column(
                                     children: [
-                                      if (wantSpendDocuments != null)
-                                        for (final document
-                                            in wantSpendDocuments)
-                                          Container(
-                                            padding: const EdgeInsets.all(15),
-                                            child: Text(
-                                              '${document['value']} PLN',
-                                              style: const TextStyle(
-                                                  fontSize: 27,
-                                                  color: Colors.green,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                      for (final itemModel
+                                          in wantSpendItemModels)
+                                        Container(
+                                          padding: const EdgeInsets.all(15),
+                                          child: Text(
+                                            '${itemModel.value} PLN',
+                                            style: const TextStyle(
+                                                fontSize: 27,
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.bold),
                                           ),
+                                        ),
                                     ],
                                   ),
                                 ],
@@ -127,32 +126,30 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                       const SizedBox(height: 40),
                       Column(
                         children: [
-                          if (expenditureListDocuments != null)
-                            for (final document
-                                in expenditureListDocuments) ...[
-                              Dismissible(
-                                background: Container(
-                                  color: Colors.red,
-                                  child: const Icon(Icons.delete),
-                                ),
-                                key: ValueKey(document.id),
-                                child: ExpenditureWidget(
-                                  width: width,
-                                  height: height,
-                                  doc: document['name'],
-                                ),
-                                onDismissed: (direction) {
-                                  context
-                                      .read<ExpenseListCubit>()
-                                      .removePositionOnExpenditureList(
-                                          id: document.id);
-                                },
-                                confirmDismiss: (direction) async {
-                                  return direction ==
-                                      DismissDirection.endToStart;
-                                },
+                          for (final itemModel
+                              in expenditureListItemModels) ...[
+                            Dismissible(
+                              background: Container(
+                                color: Colors.red,
+                                child: const Icon(Icons.delete),
                               ),
-                            ],
+                              key: ValueKey(itemModel.id),
+                              child: ExpenditureWidget(
+                                width: width,
+                                height: height,
+                                expenditure: itemModel.name,
+                              ),
+                              onDismissed: (direction) {
+                                context
+                                    .read<ExpenseListCubit>()
+                                    .removePositionOnExpenditureList(
+                                        documentId: itemModel.id);
+                              },
+                              confirmDismiss: (direction) async {
+                                return direction == DismissDirection.endToStart;
+                              },
+                            ),
+                          ],
                         ],
                       ),
                     ],

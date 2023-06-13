@@ -5,12 +5,12 @@ class ExpenditureWidget extends StatelessWidget {
     super.key,
     required this.width,
     required this.height,
-    required this.doc,
+    required this.expenditure,
   });
 
   final double width;
   final double height;
-  final String doc;
+  final String expenditure;
   // final concreteExpense = TextEditingController();
   // final cost = TextEditingController();
 
@@ -48,7 +48,7 @@ class ExpenditureWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        doc,
+                        expenditure,
                         style:
                             const TextStyle(fontSize: 16, color: Colors.orange),
                         textAlign: TextAlign.center,
