@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skarbonka_v2/app/models/my_account_model.dart';
 part 'my_account_state.dart';
 
 class MyAccountCubit extends Cubit<MyAccountState> {
@@ -26,8 +27,15 @@ class MyAccountCubit extends Cubit<MyAccountState> {
         .snapshots()
         .listen(
       (data) {
+        final wantSpendModel = data.docs.map((doc) {
+          return MyAccountModel(
+            id: doc.id,
+            saving: doc['saving'],
+            value: doc['value'],
+          );
+        }).toList();
         emit(
-          MyAccountState(documents: data.docs),
+          MyAccountState(documents: wantSpendModel),
         );
       },
     )..onError((error) {
@@ -37,7 +45,7 @@ class MyAccountCubit extends Cubit<MyAccountState> {
       });
   }
 
-  Future<void> remove({required id}) async {
+  Future<void> remove({required documentId}) async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
@@ -47,7 +55,7 @@ class MyAccountCubit extends Cubit<MyAccountState> {
           .collection('users')
           .doc(userdID)
           .collection('wantspend')
-          .doc(id)
+          .doc(documentId)
           .delete();
     } catch (error) {
       emit(MyAccountState(errorMessage: error.toString()));
@@ -78,8 +86,8 @@ class MyAccountCubit extends Cubit<MyAccountState> {
           .collection('wantspend')
           .add(
         {
-          'value': result,
-          'saving': savingsControllerValue,
+          'value': result.toString(),
+          'saving': savingsControllerValue.toString(),
         },
       );
     } catch (error) {

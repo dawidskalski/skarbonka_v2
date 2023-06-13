@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skarbonka_v2/app/models/expense_model.dart';
 part 'expense_list_state.dart';
 
 class ExpenseListCubit extends Cubit<ExpenseListState> {
@@ -28,8 +29,15 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
         .snapshots()
         .listen(
       (data) {
+        final itemModelsWantSpend = data.docs.map((doc) {
+          return ExpenseModel(
+            id: doc.id,
+            saving: doc['saving'],
+            value: doc['value'],
+          );
+        }).toList();
         emit(ExpenseListState(
-          wantSpendDocuments: data.docs,
+          wantSpendDocuments: itemModelsWantSpend,
         ));
       },
     )..onError(
@@ -47,8 +55,14 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
         .snapshots()
         .listen(
       (data) {
+        final itemModelsExpenditure = data.docs.map((doc) {
+          return ExpenseModel(
+            id: doc.id,
+            name: doc['name'],
+          );
+        }).toList();
         emit(ExpenseListState(
-          expenditureListDocuments: data.docs,
+          expenditureListDocuments: itemModelsExpenditure,
           wantSpendDocuments: state.wantSpendDocuments,
         ));
       },
@@ -62,7 +76,8 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
   }
 
 // usuwanie wydatku --------------------------- remove expenditure
-  Future<void> removePositionOnExpenditureList({required String id}) async {
+  Future<void> removePositionOnExpenditureList(
+      {required String documentId}) async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
@@ -72,7 +87,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
           .collection('users')
           .doc(userdID)
           .collection('expenditure')
-          .doc(id)
+          .doc(documentId)
           .delete();
     } catch (error) {
       emit(ExpenseListState(errorMessage: error.toString()));

@@ -198,7 +198,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                             const Text(
                                                 'Miesięcznie do wydania mam: '),
                                             Text(
-                                              '${document['value']} PLN',
+                                              '${document.value} PLN',
                                               style: const TextStyle(
                                                   fontSize: 30,
                                                   color: Colors.red,
@@ -224,7 +224,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                           const Text(
                                               'Miesięcznie oszczędzam: '),
                                           Text(
-                                            '${document['saving']} PLN',
+                                            '${document.saving} PLN',
                                             style: const TextStyle(
                                                 fontSize: 30,
                                                 color: Color.fromARGB(
@@ -243,7 +243,8 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                             setState(() {
                                               context
                                                   .read<MyAccountCubit>()
-                                                  .remove(id: document.id);
+                                                  .remove(
+                                                      documentId: document.id);
                                               isCreatingValue = true;
                                             });
                                           },
