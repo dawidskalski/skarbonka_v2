@@ -1,12 +1,10 @@
-class ExpenseModel {
+class WantspendModel {
   final String id;
-  final String name;
   final String saving;
   final String value;
 
-  ExpenseModel({
+  WantspendModel({
     this.id = '',
-    this.name = '',
     this.saving = '',
     this.value = '',
   });
