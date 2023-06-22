@@ -10,7 +10,7 @@ class WantspendRepository {
     }
 
     return FirebaseFirestore.instance
-        .collection('Users')
+        .collection('users')
         .doc(userID)
         .collection('wantspend')
         .snapshots()
