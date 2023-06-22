@@ -13,8 +13,8 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
           ExpenseListState(loading: false),
         );
 
-  ExpenditureRepository _expenditureRepository;
-  WantspendRepository _wantspendRepository;
+  final ExpenditureRepository _expenditureRepository;
+  final WantspendRepository _wantspendRepository;
   StreamSubscription? _wannaspendSubscription;
   StreamSubscription? _expenditureSubscription;
 
@@ -54,7 +54,7 @@ class ExpenseListCubit extends Cubit<ExpenseListState> {
   Future<void> removePositionOnExpenditureList(
       {required String documentId}) async {
     try {
-      _expenditureRepository.removeExpenditure(documentID: documentId);
+      await _expenditureRepository.removeExpenditure(documentID: documentId);
     } catch (error) {
       emit(ExpenseListState(errorMessage: error.toString()));
       start();

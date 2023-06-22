@@ -10,7 +10,7 @@ class MyAccountCubit extends Cubit<MyAccountState> {
           MyAccountState(loading: false),
         );
 
-  WantspendRepository _wantspendRepository;
+  final WantspendRepository _wantspendRepository;
   StreamSubscription? _streamSubscription;
   Future<void> start() async {
     _streamSubscription = _wantspendRepository.getWantSpendStream().listen(
@@ -28,7 +28,7 @@ class MyAccountCubit extends Cubit<MyAccountState> {
 
   Future<void> remove({required documentId}) async {
     try {
-      _wantspendRepository.removeWantspend(documentID: documentId);
+      await _wantspendRepository.removeWantspend(documentID: documentId);
     } catch (error) {
       emit(MyAccountState(errorMessage: error.toString()));
     }
@@ -39,13 +39,13 @@ class MyAccountCubit extends Cubit<MyAccountState> {
     required earningsController,
     required savingsController,
     var result,
-    var earningControllerValue,
+    var addEarningControllerValue,
     var savingsControllerValue,
   }) async {
     try {
-      _wantspendRepository.addtWantspend(
-          earningsController: earningsController,
-          savingsController: savingsController);
+      await _wantspendRepository.addtWantspend(
+          addEarningsController: earningsController,
+          addSavingsController: savingsController);
     } catch (error) {
       emit(MyAccountState(errorMessage: error.toString()));
     }

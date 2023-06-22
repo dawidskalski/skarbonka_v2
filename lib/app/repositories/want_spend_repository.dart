@@ -39,8 +39,8 @@ class WantspendRepository {
   }
 
   Future<void> addtWantspend({
-    required earningsController,
-    required savingsController,
+    required addEarningsController,
+    required addSavingsController,
     var result,
     var earningControllerValue,
     var savingsControllerValue,
@@ -50,8 +50,8 @@ class WantspendRepository {
       throw Exception('error');
     }
 
-    earningControllerValue = int.parse(earningsController);
-    savingsControllerValue = int.parse(savingsController);
+    earningControllerValue = int.parse(addEarningsController);
+    savingsControllerValue = int.parse(addSavingsController);
     result = earningControllerValue - savingsControllerValue;
 
     FirebaseFirestore.instance
