@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skarbonka_v2/app/features/home/add_expense/page/add_expense_page_content.dart';
 import 'package:skarbonka_v2/app/features/home/expense_list/cubit/expense_list_cubit.dart';
 import 'package:skarbonka_v2/app/features/home/expense_list/widgets/expenditure_widget.dart';
+import 'package:skarbonka_v2/app/repositories/expenditure_repository.dart';
+import 'package:skarbonka_v2/app/repositories/want_spend_repository.dart';
 
 class ExpenseListPageContent extends StatefulWidget {
   const ExpenseListPageContent({
@@ -19,7 +21,9 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return BlocProvider(
-      create: (context) => ExpenseListCubit()..start(),
+      create: (context) =>
+          ExpenseListCubit(ExpenditureRepository(), WantspendRepository())
+            ..start(),
       child: BlocBuilder<ExpenseListCubit, ExpenseListState>(
         builder: (context, state) {
           if (state.loading) {
@@ -138,6 +142,7 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                                 width: width,
                                 height: height,
                                 expenditure: itemModel.name,
+                                cost: itemModel.cost
                               ),
                               onDismissed: (direction) {
                                 context

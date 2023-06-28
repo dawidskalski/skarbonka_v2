@@ -1,30 +1,28 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skarbonka_v2/app/repositories/expenditure_repository.dart';
 
 part 'add_expense_state.dart';
 
 class AddExpenseCubit extends Cubit<AddExpenseState> {
-  AddExpenseCubit() : super(AddExpenseState());
+  AddExpenseCubit(this._expenditureRepository) : super(AddExpenseState());
+
+  final ExpenditureRepository _expenditureRepository;
 
   // Dodawanie wydatku --------------------------------add expenditure
-  Future<void> addToExpenditureList(expenseName) async {
+  Future<void> addToExpenditureList(
+      {required expenseName, required cost}) async {
     final userdID = FirebaseAuth.instance.currentUser?.uid;
     if (userdID == null) {
       throw Exception('error');
-    }
-
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userdID)
-          .collection('expenditure')
-          .add({
-        'name': expenseName,
-      });
-      emit(AddExpenseState(save: true));
-    } catch (error) {
-      emit(AddExpenseState(errorMessage: error.toString()));
+    } else {
+      try {
+        await _expenditureRepository.addToExpenditure(
+            cost: cost, expenseName: expenseName);
+        emit(AddExpenseState(save: true));
+      } catch (error) {
+        emit(AddExpenseState(errorMessage: error.toString()));
+      }
     }
   }
 }

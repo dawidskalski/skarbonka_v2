@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:skarbonka_v2/app/app.dart';
+import 'package:skarbonka_v2/app/my_app.dart';
 import 'firebase_options.dart';
 
 void main() async {

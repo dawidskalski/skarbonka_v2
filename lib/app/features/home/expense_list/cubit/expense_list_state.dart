@@ -1,8 +1,8 @@
 part of 'expense_list_cubit.dart';
 
 class ExpenseListState {
-  final List<ExpenseModel> expenditureListDocuments;
-  final List<ExpenseModel> wantSpendDocuments;
+  final List<ExpenditureModel> expenditureListDocuments;
+  final List<WantspendModel> wantSpendDocuments;
   final String errorMessage;
   final bool loading;
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skarbonka_v2/app/cubit/root_cubit.dart';
 import 'package:skarbonka_v2/app/features/home/expense_list/page/expense_list_page_content.dart';
-import 'package:skarbonka_v2/app/features/home/monthly_report/monthly_report_page_content.dart';
+import 'package:skarbonka_v2/app/features/home/reminders/reminders_page_content.dart';
 import 'package:skarbonka_v2/app/features/home/my_account/page/my_account_page_content.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,8 +62,8 @@ class _HomePageState extends State<HomePage> {
         },
         items: const [
           TabItem(
-            icon: Icon(Icons.bar_chart_rounded),
-            title: 'Raport wydatków',
+            icon: Icon(Icons.dashboard),
+            title: 'Przypomnienia',
           ),
           TabItem(
             icon: Icon(Icons.home_outlined),
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Builder(builder: (context) {
         if (selectedIndex == 0) {
-          return const MonthlyReportPageContent();
+          return const ReminderPageContent();
         }
 
         if (selectedIndex == 1) {
