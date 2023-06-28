@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skarbonka_v2/app/features/home/add_expense/cubit/add_expense_cubit.dart';
 import 'package:skarbonka_v2/app/features/home/expense_list/page/expense_list_page_content.dart';
+import 'package:skarbonka_v2/app/repositories/expenditure_repository.dart';
 
 class AddExpensePageContent extends StatefulWidget {
   const AddExpensePageContent({
@@ -14,20 +15,37 @@ class AddExpensePageContent extends StatefulWidget {
 
 class _AddExpensePageContentState extends State<AddExpensePageContent> {
   late TextEditingController expenseNameController;
-  var isButtonEnabled = false;
+  late TextEditingController costController;
+  var isButtonEnabledOne = false;
+  var isButtonEnabledTwo = false;
 
   @override
   void initState() {
     super.initState();
     expenseNameController = TextEditingController();
-    expenseNameController.addListener(() {
-      if (expenseNameController.text.isNotEmpty) {
+    expenseNameController.addListener(
+      () {
+        if (expenseNameController.text.isNotEmpty) {
+          setState(() {
+            isButtonEnabledOne = true;
+          });
+        } else {
+          setState(() {
+            isButtonEnabledOne = false;
+          });
+        }
+      },
+    );
+
+    costController = TextEditingController();
+    costController.addListener(() {
+      if (costController.text.isNotEmpty) {
         setState(() {
-          isButtonEnabled = true;
+          isButtonEnabledTwo = true;
         });
       } else {
         setState(() {
-          isButtonEnabled = false;
+          isButtonEnabledTwo = false;
         });
       }
     });
@@ -36,13 +54,14 @@ class _AddExpensePageContentState extends State<AddExpensePageContent> {
   @override
   void dispose() {
     expenseNameController.dispose();
+    costController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AddExpenseCubit(),
+      create: (context) => AddExpenseCubit(ExpenditureRepository()),
       child: BlocListener<AddExpenseCubit, AddExpenseState>(
         listener: (context, state) {
           if (state.save == true) {
@@ -91,16 +110,32 @@ class _AddExpensePageContentState extends State<AddExpensePageContent> {
                   ),
                   Container(
                     padding: const EdgeInsets.all(10),
+                    child: TextField(
+                      controller: costController,
+                      decoration: InputDecoration(
+                        label: const Text('Ile pieniędzy zainwestowano ?'),
+                        hintText: 'np: 10 zł',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
                     child: ElevatedButton(
-                      onPressed: isButtonEnabled == false
+                      onPressed: isButtonEnabledOne == false ||
+                              isButtonEnabledTwo == false
                           ? null
                           : () {
                               context
                                   .read<AddExpenseCubit>()
                                   .addToExpenditureList(
-                                      expenseNameController.text);
+                                      cost: costController.text,
+                                      expenseName: expenseNameController.text);
 
                               expenseNameController.clear();
+                              costController.clear();
                             },
                       child: const Text('Dodaj'),
                     ),

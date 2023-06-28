@@ -19,6 +19,7 @@ class ExpenditureRepository {
         return ExpenditureModel(
           id: doc.id,
           name: doc['name'],
+          cost: doc['cost'],
         );
       }).toList();
     });
@@ -35,5 +36,21 @@ class ExpenditureRepository {
         .collection('expenditure')
         .doc(documentID)
         .delete();
+  }
+
+  Future<void> addToExpenditure({required expenseName, required cost}) async {
+    final userID = FirebaseAuth.instance.currentUser?.uid;
+    if (userID == null) {
+      throw Exception('Error Add Expenditure');
+    }
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userID)
+        .collection('expenditure')
+        .add({
+      'name': expenseName,
+      'cost': cost,
+    });
   }
 }

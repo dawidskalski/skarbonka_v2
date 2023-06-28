@@ -142,6 +142,7 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                                 width: width,
                                 height: height,
                                 expenditure: itemModel.name,
+                                cost: itemModel.cost
                               ),
                               onDismissed: (direction) {
                                 context
