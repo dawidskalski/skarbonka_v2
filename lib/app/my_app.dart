@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skarbonka_v2/app/cubit/root_cubit.dart';
 import 'package:skarbonka_v2/app/features/home/home_page.dart';
 import 'package:skarbonka_v2/app/features/login/login_page.dart';
+import 'package:skarbonka_v2/app/themes/theme.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -12,14 +13,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        brightness: Brightness.light,
-      ),
-      themeMode: ThemeMode.light,
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-      ),
+      theme: Themes.light,
+      darkTheme: Themes.dark,
+      themeMode: ThemeMode.dark,
       home: const RootPage(),
     );
   }
