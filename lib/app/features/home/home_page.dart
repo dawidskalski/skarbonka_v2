@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skarbonka_v2/app/cubit/root_cubit.dart';
 import 'package:skarbonka_v2/app/features/home/expense_list/page/expense_list_page_content.dart';
-import 'package:skarbonka_v2/app/features/home/monthly_report/notification_page_content.dart';
+import 'package:skarbonka_v2/app/features/home/reminders/reminders_page_content.dart';
 import 'package:skarbonka_v2/app/features/home/my_account/page/my_account_page_content.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
@@ -77,7 +76,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Builder(builder: (context) {
         if (selectedIndex == 0) {
-          return const NotificationPageContent();
+          return const ReminderPageContent();
         }
 
         if (selectedIndex == 1) {
