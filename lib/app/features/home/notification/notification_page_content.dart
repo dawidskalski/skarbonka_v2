@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class MonthlyReportPageContent extends StatelessWidget {
-  const MonthlyReportPageContent({
+class NotificationPageContent extends StatelessWidget {
+  const NotificationPageContent({
     super.key,
   });
 
@@ -35,7 +35,6 @@ class MonthlyReportPageContent extends StatelessWidget {
               ],
             ),
           ),
-          
         ],
       ),
     );
