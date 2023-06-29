@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skarbonka_v2/app/features/home/add_expense/page/add_expense_page_content.dart';
 import 'package:skarbonka_v2/app/features/home/expense_list/cubit/expense_list_cubit.dart';
 import 'package:skarbonka_v2/app/features/home/expense_list/widgets/expenditure_widget.dart';
+import 'package:skarbonka_v2/app/repositories/expenditure_repository.dart';
+import 'package:skarbonka_v2/app/repositories/want_spend_repository.dart';
 
 class ExpenseListPageContent extends StatefulWidget {
   const ExpenseListPageContent({
@@ -19,7 +21,9 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return BlocProvider(
-      create: (context) => ExpenseListCubit()..start(),
+      create: (context) =>
+          ExpenseListCubit(ExpenditureRepository(), WantspendRepository())
+            ..start(),
       child: BlocBuilder<ExpenseListCubit, ExpenseListState>(
         builder: (context, state) {
           if (state.loading) {
@@ -32,8 +36,8 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                 child: Text('Something went wrong: ${state.errorMessage}'));
           }
 
-          final expenditureListDocuments = state.expenditureListDocuments;
-          final wantSpendDocuments = state.wantSpendDocuments;
+          final expenditureListItemModels = state.expenditureListDocuments;
+          final wantSpendItemModels = state.wantSpendDocuments;
 
           return Scaffold(
             floatingActionButton: FloatingActionButton(
@@ -103,19 +107,18 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                                   ),
                                   Column(
                                     children: [
-                                      if (wantSpendDocuments != null)
-                                        for (final document
-                                            in wantSpendDocuments)
-                                          Container(
-                                            padding: const EdgeInsets.all(15),
-                                            child: Text(
-                                              '${document['value']} PLN',
-                                              style: const TextStyle(
-                                                  fontSize: 27,
-                                                  color: Colors.green,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                      for (final itemModel
+                                          in wantSpendItemModels)
+                                        Container(
+                                          padding: const EdgeInsets.all(15),
+                                          child: Text(
+                                            '${itemModel.value} PLN',
+                                            style: const TextStyle(
+                                                fontSize: 27,
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.bold),
                                           ),
+                                        ),
                                     ],
                                   ),
                                 ],
@@ -127,32 +130,31 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                       const SizedBox(height: 40),
                       Column(
                         children: [
-                          if (expenditureListDocuments != null)
-                            for (final document
-                                in expenditureListDocuments) ...[
-                              Dismissible(
-                                background: Container(
-                                  color: Colors.red,
-                                  child: const Icon(Icons.delete),
-                                ),
-                                key: ValueKey(document.id),
-                                child: ExpenditureWidget(
-                                  width: width,
-                                  height: height,
-                                  doc: document['name'],
-                                ),
-                                onDismissed: (direction) {
-                                  context
-                                      .read<ExpenseListCubit>()
-                                      .removePositionOnExpenditureList(
-                                          id: document.id);
-                                },
-                                confirmDismiss: (direction) async {
-                                  return direction ==
-                                      DismissDirection.endToStart;
-                                },
+                          for (final itemModel
+                              in expenditureListItemModels) ...[
+                            Dismissible(
+                              background: Container(
+                                color: Colors.red,
+                                child: const Icon(Icons.delete),
                               ),
-                            ],
+                              key: ValueKey(itemModel.id),
+                              child: ExpenditureWidget(
+                                width: width,
+                                height: height,
+                                expenditure: itemModel.name,
+                                cost: itemModel.cost
+                              ),
+                              onDismissed: (direction) {
+                                context
+                                    .read<ExpenseListCubit>()
+                                    .removePositionOnExpenditureList(
+                                        documentId: itemModel.id);
+                              },
+                              confirmDismiss: (direction) async {
+                                return direction == DismissDirection.endToStart;
+                              },
+                            ),
+                          ],
                         ],
                       ),
                     ],

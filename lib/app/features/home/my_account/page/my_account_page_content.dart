@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skarbonka_v2/app/features/home/my_account/cubit/my_account_cubit.dart';
+import 'package:skarbonka_v2/app/repositories/want_spend_repository.dart';
 
 class MyAccountPageContent extends StatefulWidget {
   const MyAccountPageContent({
@@ -26,7 +27,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
     double height = MediaQuery.of(context).size.height;
 
     return BlocProvider(
-      create: (context) => MyAccountCubit()..start(),
+      create: (context) => MyAccountCubit(WantspendRepository())..start(),
       child: BlocListener<MyAccountCubit, MyAccountState>(
         listener: (context, state) {
           if (state.errorMessage.isNotEmpty) {
@@ -198,7 +199,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                             const Text(
                                                 'Miesięcznie do wydania mam: '),
                                             Text(
-                                              '${document['value']} PLN',
+                                              '${document.value} PLN',
                                               style: const TextStyle(
                                                   fontSize: 30,
                                                   color: Colors.red,
@@ -224,7 +225,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                           const Text(
                                               'Miesięcznie oszczędzam: '),
                                           Text(
-                                            '${document['saving']} PLN',
+                                            '${document.saving} PLN',
                                             style: const TextStyle(
                                                 fontSize: 30,
                                                 color: Color.fromARGB(
@@ -243,7 +244,8 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                             setState(() {
                                               context
                                                   .read<MyAccountCubit>()
-                                                  .remove(id: document.id);
+                                                  .remove(
+                                                      documentId: document.id);
                                               isCreatingValue = true;
                                             });
                                           },

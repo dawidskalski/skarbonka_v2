@@ -1,33 +1,22 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skarbonka_v2/app/models/want_spend_model.dart';
+import 'package:skarbonka_v2/app/repositories/want_spend_repository.dart';
 part 'my_account_state.dart';
 
 class MyAccountCubit extends Cubit<MyAccountState> {
-  MyAccountCubit()
+  MyAccountCubit(this._wantspendRepository)
       : super(
           MyAccountState(loading: false),
         );
 
+  final WantspendRepository _wantspendRepository;
   StreamSubscription? _streamSubscription;
   Future<void> start() async {
-    final userdID = FirebaseAuth.instance.currentUser?.uid;
-    if (userdID == null) {
-      throw Exception('error');
-    }
-    emit(
-      MyAccountState(loading: true),
-    );
-    _streamSubscription = FirebaseFirestore.instance
-        .collection('users')
-        .doc(userdID)
-        .collection('wantspend')
-        .snapshots()
-        .listen(
-      (data) {
+    _streamSubscription = _wantspendRepository.getWantSpendStream().listen(
+      (wantspendData) {
         emit(
-          MyAccountState(documents: data.docs),
+          MyAccountState(documents: wantspendData),
         );
       },
     )..onError((error) {
@@ -37,18 +26,9 @@ class MyAccountCubit extends Cubit<MyAccountState> {
       });
   }
 
-  Future<void> remove({required id}) async {
-    final userdID = FirebaseAuth.instance.currentUser?.uid;
-    if (userdID == null) {
-      throw Exception('error');
-    }
+  Future<void> remove({required documentId}) async {
     try {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userdID)
-          .collection('wantspend')
-          .doc(id)
-          .delete();
+      await _wantspendRepository.removeWantspend(documentID: documentId);
     } catch (error) {
       emit(MyAccountState(errorMessage: error.toString()));
     }
@@ -59,29 +39,13 @@ class MyAccountCubit extends Cubit<MyAccountState> {
     required earningsController,
     required savingsController,
     var result,
-    var earningControllerValue,
+    var addEarningControllerValue,
     var savingsControllerValue,
   }) async {
-    final userdID = FirebaseAuth.instance.currentUser?.uid;
-    if (userdID == null) {
-      throw Exception('error');
-    }
-
-    earningControllerValue = int.parse(earningsController);
-    savingsControllerValue = int.parse(savingsController);
-    result = earningControllerValue - savingsControllerValue;
-
     try {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userdID)
-          .collection('wantspend')
-          .add(
-        {
-          'value': result,
-          'saving': savingsControllerValue,
-        },
-      );
+      await _wantspendRepository.addtWantspend(
+          addEarningsController: earningsController,
+          addSavingsController: savingsController);
     } catch (error) {
       emit(MyAccountState(errorMessage: error.toString()));
     }

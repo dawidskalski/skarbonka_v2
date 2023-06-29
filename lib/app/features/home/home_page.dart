@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skarbonka_v2/app/cubit/root_cubit.dart';
 import 'package:skarbonka_v2/app/features/home/expense_list/page/expense_list_page_content.dart';
-import 'package:skarbonka_v2/app/features/home/notification/notification_page_content.dart';
+import 'package:skarbonka_v2/app/features/home/monthly_report/monthly_report_page_content.dart';
 import 'package:skarbonka_v2/app/features/home/my_account/page/my_account_page_content.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Builder(builder: (context) {
         if (selectedIndex == 0) {
-          return const NotificationPageContent();
+          return const NotiPageContent();
         }
 
         if (selectedIndex == 1) {
