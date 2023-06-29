@@ -48,7 +48,11 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                       fullscreenDialog: true),
                 );
               },
-              child: const Icon(Icons.add),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.orange,
             ),
             body: Center(
               child: ListView(
@@ -139,11 +143,10 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                               ),
                               key: ValueKey(itemModel.id),
                               child: ExpenditureWidget(
-                                width: width,
-                                height: height,
-                                expenditure: itemModel.name,
-                                cost: itemModel.cost
-                              ),
+                                  width: width,
+                                  height: height,
+                                  expenditure: itemModel.name,
+                                  cost: itemModel.cost),
                               onDismissed: (direction) {
                                 context
                                     .read<ExpenseListCubit>()

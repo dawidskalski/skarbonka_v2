@@ -6,6 +6,7 @@ import 'package:skarbonka_v2/app/features/home/reminders/reminders_page_content.
 import 'package:skarbonka_v2/app/features/home/my_account/page/my_account_page_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({
@@ -28,30 +29,36 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 2,
         leading: Container(
           margin: const EdgeInsets.all(3),
           padding: const EdgeInsets.all(3),
-          child: const CircleAvatar(
-            backgroundImage: AssetImage('images/piggy.png'),
-          ),
+          // child: const CircleAvatar(
+          //   backgroundImage: AssetImage('images/piggy.png'),
+          // ),
         ),
         centerTitle: true,
-        title: const Text('Skarbonka'),
+        title: Text(
+          '#Skarbonka',
+          style: GoogleFonts.dancingScript(color: Colors.white, fontSize: 40),
+        ),
         actions: [
           IconButton(
               color: Colors.orange,
               onPressed: () {
                 context.read<RootCubit>().signOut();
               },
-              icon: const Icon(Icons.logout))
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white,
+              ))
         ],
       ),
       bottomNavigationBar: ConvexAppBar(
-        backgroundColor: Colors.white,
-        color: Colors.black,
-        activeColor: Colors.orange,
+        backgroundColor: Colors.orange,
+        color: Colors.white,
+        activeColor: Colors.orange[900],
         shadowColor: Colors.black,
         initialActiveIndex: selectedIndex,
         onTap: (value) {
@@ -61,15 +68,24 @@ class _HomePageState extends State<HomePage> {
         },
         items: const [
           TabItem(
-            icon: Icon(Icons.bar_chart_rounded),
+            icon: Icon(
+              Icons.bar_chart_rounded,
+              color: Colors.white,
+            ),
             title: 'Raport wydatków',
           ),
           TabItem(
-            icon: Icon(Icons.home_outlined),
+            icon: Icon(
+              Icons.home_outlined,
+              color: Colors.white,
+            ),
             title: 'Strona główna',
           ),
           TabItem(
-            icon: Icon(Icons.person),
+            icon: Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
             title: 'Moje konto',
           ),
         ],
