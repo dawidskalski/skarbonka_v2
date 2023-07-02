@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dawidskalski.skarbonka_v2">
+    package="com.dawidskalski.skarbonka_v2"
+   >
+     
    <application
         android:label="skarbonka_v2"
         android:name="${applicationName}"
@@ -32,3 +34,5 @@
             android:value="2" />
     </application>
 </manifest>
+
+   

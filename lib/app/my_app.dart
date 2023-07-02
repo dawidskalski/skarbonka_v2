@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:skarbonka_v2/app/cubit/root_cubit.dart';
 import 'package:skarbonka_v2/app/features/home/home_page.dart';
 import 'package:skarbonka_v2/app/features/login/login_page.dart';
-import 'package:skarbonka_v2/app/themes/theme.dart';
+import 'package:skarbonka_v2/app/my_app/services/theme_services.dart';
+import 'package:skarbonka_v2/app/my_app/themes/theme.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: Themes.light,
       darkTheme: Themes.dark,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeServices().getTheme(),
       home: const RootPage(),
     );
   }

@@ -48,11 +48,11 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                       fullscreenDialog: true),
                 );
               },
+              backgroundColor: Colors.orange,
               child: const Icon(
                 Icons.add,
                 color: Colors.white,
               ),
-              backgroundColor: Colors.orange,
             ),
             body: Center(
               child: ListView(

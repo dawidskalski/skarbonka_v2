@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:skarbonka_v2/app/cubit/root_cubit.dart';
 import 'package:skarbonka_v2/app/features/home/expense_list/page/expense_list_page_content.dart';
 import 'package:skarbonka_v2/app/features/home/reminders/reminders_page_content.dart';
@@ -7,6 +8,8 @@ import 'package:skarbonka_v2/app/features/home/my_account/page/my_account_page_c
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:skarbonka_v2/app/my_app/services/notification_services.dart';
+import 'package:skarbonka_v2/app/my_app/services/theme_services.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({
@@ -24,24 +27,41 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var selectedIndex = 1;
+  var notifyHelper;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    notifyHelper = NotifyHelper();
+    notifyHelper.initializeNotification();
+    notifyHelper.requestIOSPermissions();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 2,
-        leading: Container(
-          margin: const EdgeInsets.all(3),
-          padding: const EdgeInsets.all(3),
-          // child: const CircleAvatar(
-          //   backgroundImage: AssetImage('images/piggy.png'),
-          // ),
+        leading: GestureDetector(
+          onTap: () {
+            ThemeServices().switchThemeMode();
+            notifyHelper.displayNotification(
+                title: 'Zmiana motywu',
+                body: Get.isDarkMode
+                    ? 'Aktywowano jasny motyw'
+                    : 'Aktywowano ciemny motyw');
+            notifyHelper.scheduledNotification();
+          },
+          child: Icon(Icons.nightlight_round),
         ),
         centerTitle: true,
         title: Text(
           '#Skarbonka',
-          style: GoogleFonts.dancingScript(color: Colors.white, fontSize: 40),
+          style: GoogleFonts.dancingScript(
+            color: Colors.white,
+            fontSize: 40,
+          ),
         ),
         actions: [
           IconButton(
