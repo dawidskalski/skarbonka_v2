@@ -16,7 +16,7 @@ class MyAccountCubit extends Cubit<MyAccountState> {
     _streamSubscription = _wantspendRepository.getWantSpendStream().listen(
       (wantspendData) {
         emit(
-          MyAccountState(documents: wantspendData),
+          MyAccountState(wantSpendDocuments: wantspendData),
         );
       },
     )..onError((error) {

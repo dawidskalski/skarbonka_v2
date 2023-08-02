@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+// import 'package:timezone/data/latest.dart' as tz;
+// import 'package:timezone/timezone.dart' as tz;
 
 class NotifyHelper {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
   initializeNotification() async {
-    tz.initializeTimeZones();
+    // tz.initializeTimeZones();
     // this is for latest iOS settings
     final DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
@@ -18,7 +18,7 @@ class NotifyHelper {
             requestAlertPermission: false,
             onDidReceiveLocalNotification: onDidReceiveLocalNotification);
 
-    final AndroidInitializationSettings initializationSettingsAndroid =
+    const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('appicon ');
 
     final InitializationSettings initializationSettings =
@@ -30,28 +30,27 @@ class NotifyHelper {
     );
   }
 
-  scheduledNotification() async {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        'scheduled title',
-        'theme changes 5 seconds ago',
-        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 2)),
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-          'your channel id',
-          'your channel name',
-        )),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
-  }
+  // scheduledNotification() async {
+  //   await flutterLocalNotificationsPlugin.zonedSchedule(
+  //       0,
+  //       'scheduled title',
+  //       'theme changes 5 seconds ago',
+  //       tz.TZDateTime.now(tz.local).add(const Duration(seconds: 2)),
+  //       const NotificationDetails(
+  //           android: AndroidNotificationDetails(
+  //         'your channel id',
+  //         'your channel name',
+  //       )),
+  //       androidAllowWhileIdle: true,
+  //       uiLocalNotificationDateInterpretation:
+  //           UILocalNotificationDateInterpretation.absoluteTime);
+  // }
 
   displayNotification({required String title, required String body}) async {
-    print("doing test");
     var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
         'your channel id', 'your channel name',
         importance: Importance.max, priority: Priority.high, icon: 'appicon');
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var iOSPlatformChannelSpecifics = iosNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
@@ -76,11 +75,6 @@ class NotifyHelper {
   }
 
   Future<void> selectNotification(String? payload) async {
-    if (payload != null) {
-      print('notification payload: $payload');
-    } else {
-      print("Notification Done");
-    }
     Get.to(() => Container(
           color: Colors.white,
         ));
@@ -111,8 +105,8 @@ class NotifyHelper {
     //     ],
     //   ),
     // );
-    Get.dialog(Text('Witaj w aplikacji #Skarbonka '));
+    Get.dialog(const Text('Witaj w aplikacji #Skarbonka '));
   }
 
-  IOSNotificationDetails() {}
+  iosNotificationDetails() {}
 }

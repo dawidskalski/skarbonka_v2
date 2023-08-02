@@ -10,7 +10,7 @@ part 'expense_list_state.dart';
 class ExpenseListCubit extends Cubit<ExpenseListState> {
   ExpenseListCubit(this._expenditureRepository, this._wantspendRepository)
       : super(
-          ExpenseListState(loading: false),
+          ExpenseListState(loading: true),
         );
 
   final ExpenditureRepository _expenditureRepository;

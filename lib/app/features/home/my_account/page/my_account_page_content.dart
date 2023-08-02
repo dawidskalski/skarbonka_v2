@@ -15,8 +15,8 @@ class MyAccountPageContent extends StatefulWidget {
   State<MyAccountPageContent> createState() => _MyAccountPageContentState();
 }
 
-var earningsController = '';
-var savingsController = '';
+final earningsController = TextEditingController();
+final savingsController = TextEditingController();
 var isCreatingValue = false;
 var hiden = true;
 
@@ -51,7 +51,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                 child: Text('Something went wrong: ${state.errorMessage}'),
               );
             }
-            final documents = state.documents;
+            final wantSpendItemModels = state.wantSpendDocuments;
             return Center(
               child: ListView(
                 children: [
@@ -131,11 +131,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                               Container(
                                 margin: const EdgeInsets.all(5),
                                 child: TextField(
-                                  onChanged: (value) {
-                                    setState(() {
-                                      earningsController = value;
-                                    });
-                                  },
+                                  controller: earningsController,
                                   decoration: InputDecoration(
                                     label: const Text(
                                       'Zarabiam',
@@ -143,11 +139,10 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                     ),
                                     hintText: 'Podaj swoje wynagrodzenie.',
                                     suffixIcon: const Icon(Icons.paid,
-                                        color:
-                                            Color.fromARGB(255, 222, 174, 0)),
+                                        color: Colors.orange),
                                     border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30)),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -155,11 +150,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                               Container(
                                 margin: const EdgeInsets.all(5),
                                 child: TextField(
-                                  onChanged: (value) {
-                                    setState(() {
-                                      savingsController = value;
-                                    });
-                                  },
+                                  controller: savingsController,
                                   decoration: InputDecoration(
                                     label: const Text(
                                       'Oszczędzam',
@@ -168,17 +159,16 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                     hintText:
                                         'Podaj kwote jaką chcesz zaoszczędzić.',
                                     suffixIcon: const Icon(Icons.savings,
-                                        color:
-                                            Color.fromARGB(255, 222, 174, 0)),
+                                        color: Colors.orange),
                                     border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30)),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
                                   ),
                                 ),
                               ),
                             Column(
                               children: [
-                                for (final document in documents) ...[
+                                for (final document in wantSpendItemModels) ...[
                                   if (isCreatingValue == false)
                                     Container(
                                       padding: const EdgeInsets.all(5),
@@ -270,9 +260,9 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                         .read<MyAccountCubit>()
                                         .addSubtractionResult(
                                             earningsController:
-                                                earningsController,
+                                                earningsController.text,
                                             savingsController:
-                                                savingsController);
+                                                savingsController.text);
 
                                     isCreatingValue = false;
                                   });

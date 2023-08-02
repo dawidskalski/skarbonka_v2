@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:skarbonka_v2/app/features/home/add_expense/page/add_expense_page_content.dart';
 import 'package:skarbonka_v2/app/features/home/expense_list/cubit/expense_list_cubit.dart';
-import 'package:skarbonka_v2/app/features/home/expense_list/widgets/expenditure_widget.dart';
+import 'package:skarbonka_v2/app/my_app/text_style/text_style.dart';
+import 'package:skarbonka_v2/app/my_app/widgets/expenditure_widget.dart';
 import 'package:skarbonka_v2/app/repositories/expenditure_repository.dart';
 import 'package:skarbonka_v2/app/repositories/want_spend_repository.dart';
 
@@ -44,8 +46,8 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => const AddExpensePageContent(),
-                      fullscreenDialog: true),
+                    builder: (context) => const AddExpensePageContent(),
+                  ),
                 );
               },
               backgroundColor: Colors.orange,
@@ -60,30 +62,25 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                   Column(
                     children: [
                       Container(
-                        width: width,
+                        width: width * 0.8,
                         height: height * 0.050,
-                        margin: const EdgeInsets.all(5),
+                        margin: const EdgeInsets.only(
+                            right: 10, left: 10, top: 15, bottom: 15),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.orange),
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.arrow_left),
-                            ),
-                            const Text('Data'),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.arrow_right),
-                            )
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            DateFormat.yMMMMEEEEd('pl').format(DateTime.now()),
+                            style: getDateTextStyleInExpenseList(),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                       Container(
-                        margin: const EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(10),
                         width: width,
                         height: height * 0.15,
                         child: Row(
@@ -112,7 +109,7 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                                   Column(
                                     children: [
                                       for (final itemModel
-                                          in wantSpendItemModels)
+                                          in wantSpendItemModels) ...{
                                         Container(
                                           padding: const EdgeInsets.all(15),
                                           child: Text(
@@ -123,6 +120,7 @@ class _ExpenseListPageContentState extends State<ExpenseListPageContent> {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
+                                      }
                                     ],
                                   ),
                                 ],

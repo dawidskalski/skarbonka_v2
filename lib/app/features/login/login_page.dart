@@ -7,7 +7,6 @@ class LoginPage extends StatefulWidget {
   });
 
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
 
   @override
@@ -23,7 +22,6 @@ class _LoginPageState extends State<LoginPage> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.white,
       body: ListView(
         children: [
           Column(
@@ -55,13 +53,11 @@ class _LoginPageState extends State<LoginPage> {
                           : 'Zarejestruj się',
                       style: const TextStyle(
                         fontSize: 20,
-                        color: Colors.grey,
                       ),
                     ),
                     const SizedBox(height: 50),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -98,7 +94,6 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 20),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(

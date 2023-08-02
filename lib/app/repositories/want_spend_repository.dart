@@ -33,7 +33,7 @@ class WantspendRepository {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userID)
-        .collection('expenditure')
+        .collection('wantspend')
         .doc(documentID)
         .delete();
   }
