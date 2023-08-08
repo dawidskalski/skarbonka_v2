@@ -35,9 +35,7 @@ class _AddReminderPageContentState extends State<AddReminderPageContent> {
   String myReminderType = reminderTypes.first;
 
   String formatTimeOfDay(TimeOfDay timeOfDay) {
-    final dateTime = DateTime(timeOfDay.hour, timeOfDay.minute);
-    final format = DateFormat.jm();
-    return format.format(dateTime);
+    return timeOfDay.format(context);
   }
 
   @override
@@ -251,7 +249,7 @@ class _AddReminderPageContentState extends State<AddReminderPageContent> {
                                       title: _titleController.text,
                                       note: _noteController.text,
                                       date: mySelectedDate!,
-                                      time: mySelectedTime.toString(),
+                                      time: mySelectedTime!.format(context),
                                       color: selectedColor,
                                       whenToRemind: myReminderType,
                                     );

@@ -33,7 +33,7 @@ class _ReminderPageContentState extends State<ReminderPageContent> {
           }
 
           if (state.errorMessage.isNotEmpty) {
-            Center(child: Text('Domtehing went wrong: ${state.errorMessage}'));
+            Center(child: Text('Somtehing went wrong: ${state.errorMessage}'));
           }
 
           final documentsFromTheItemModels =
@@ -41,7 +41,7 @@ class _ReminderPageContentState extends State<ReminderPageContent> {
           return ListView(
             children: [
               _addReminderBar(context, selectedColor),
-              _dateBar(context, selectedColor),
+              _dateBar(selectedColor),
               const SizedBox(height: 30),
               Column(
                 children: [
@@ -71,9 +71,9 @@ class _ReminderPageContentState extends State<ReminderPageContent> {
                               style: GoogleFonts.lato(fontSize: 27),
                             ),
                             Text(documentFromTheItemModel.note),
-                            Text(documentFromTheItemModel
-                                .formattedReleaseDate()),
-                            Text(documentFromTheItemModel.time),
+                            Text(
+                                'Dnia:  ${documentFromTheItemModel.formattedReleaseDate()}'),
+                            Text('Godzina:  ${documentFromTheItemModel.time}'),
                             Row(
                               children: [
                                 Text(
@@ -148,26 +148,22 @@ _addReminderBar(
   );
 }
 
-_dateBar(BuildContext context, selectionDate) {
-  return Localizations.override(
-      context: context,
-      locale: const Locale('pl'),
-      child: Builder(builder: (context) {
-        return Container(
-          margin: const EdgeInsets.only(top: 20, left: 10),
-          child: DatePicker(
-            DateTime.now(),
-            height: 100,
-            width: 90,
-            initialSelectedDate: DateTime.now(),
-            selectionColor: Colors.orange,
-            dateTextStyle: getDateTextStyle(),
-            dayTextStyle: getDayTextStyle(),
-            monthTextStyle: getMonthTextStyle(),
-            onDateChange: (selectedDate) {
-              selectionDate = selectedDate;
-            },
-          ),
-        );
-      }));
+_dateBar(selectionDate) {
+  return Container(
+    margin: const EdgeInsets.only(top: 20, left: 10),
+    child: DatePicker(
+      DateTime.now(),
+      height: 100,
+      width: 90,
+      locale: 'pl_PL',
+      initialSelectedDate: DateTime.now(),
+      selectionColor: Colors.orange,
+      dateTextStyle: getDateTextStyle(),
+      dayTextStyle: getDayTextStyle(),
+      monthTextStyle: getMonthTextStyle(),
+      onDateChange: (selectedDate) {
+        selectionDate = selectedDate;
+      },
+    ),
+  );
 }

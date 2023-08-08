@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({
@@ -8,6 +9,7 @@ class LoginPage extends StatefulWidget {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final forgetPasswordController = TextEditingController();
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -16,6 +18,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   var errorMessage = '';
   var creatingAccount = false;
+  var forgetAccount = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,93 +43,123 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Hej!',
-                      style: TextStyle(
-                        fontSize: 60,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      creatingAccount == false
-                          ? 'Zaloguj się'
-                          : 'Zarejestruj się',
-                      style: const TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 10,
-                            spreadRadius: 5,
-                            offset: const Offset(1, 1),
-                            color: Colors.grey.withOpacity(0.8),
-                          )
-                        ],
-                      ),
-                      child: TextField(
-                        controller: widget.emailController,
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(
-                                color: Colors.white,
-                                width: 1.0,
-                              )),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(
-                                color: Colors.white,
-                                width: 1.0,
-                              )),
-                          hintText: 'np:.. januszbiznes@gmail.com',
-                          prefixIcon: const Icon(Icons.mail,
-                              color: Colors.deepOrangeAccent),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30)),
+                    if (forgetAccount == false)
+                      Text(
+                        'Hej!',
+                        style: GoogleFonts.lato(
+                          fontSize: 60,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 10,
-                            spreadRadius: 5,
-                            offset: const Offset(1, 1),
-                            color: Colors.grey.withOpacity(0.8),
-                          )
+                    if (forgetAccount == false)
+                      Text(
+                        creatingAccount == false
+                            ? 'Zaloguj się'
+                            : 'Zarejestruj się',
+                        style: GoogleFonts.lato(
+                          fontSize: 30,
+                        ),
+                      ),
+                    if (forgetAccount == true)
+                      Text(
+                        'Podaj maila aby przypomnieć hasło',
+                        style: GoogleFonts.lato(
+                            fontWeight: FontWeight.bold, fontSize: 30),
+                      ),
+                    if (forgetAccount == false)
+                      Row(
+                        children: [
+                          Text(
+                            creatingAccount == false
+                                ? 'Nie masz jeszcze konta?'
+                                : 'Przecież',
+                            style: const TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              if (creatingAccount == false) {
+                                return setState(() {
+                                  creatingAccount = true;
+                                });
+                              }
+
+                              return setState(() {
+                                creatingAccount = false;
+                              });
+                            },
+                            child: Text(
+                              creatingAccount == false
+                                  ? 'Zarejestruj się'
+                                  : 'Mam już konto!',
+                              style: const TextStyle(
+                                  color: Colors.orange,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ],
                       ),
-                      child: TextField(
+                    const SizedBox(height: 50),
+                    if (forgetAccount == true)
+                      TextField(
+                        controller: widget.forgetPasswordController,
+                        decoration: InputDecoration(
+                          label: Text(
+                            'e-mail',
+                            style: GoogleFonts.lato(),
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.mail_outline,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (forgetAccount == false)
+                      TextField(
+                        controller: widget.emailController,
+                        decoration: InputDecoration(
+                          label: Text(
+                            'e-mail',
+                            style: GoogleFonts.lato(),
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.mail_outline,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 20),
+                    if (forgetAccount == false)
+                      TextField(
                         controller: widget.passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                              color: Colors.white,
-                              width: 1.0,
+                          label: Text(
+                            'Hasło',
+                            style: GoogleFonts.lato(),
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.password,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(20),
                             ),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: const BorderSide(
-                                  color: Colors.white, width: 1.0)),
-                          hintText: 'Password',
-                          prefixIcon: const Icon(Icons.password_outlined,
-                              color: Colors.deepOrangeAccent),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30)),
                         ),
                       ),
-                    ),
                     const SizedBox(height: 10),
                     Center(
                       child: Text(
@@ -140,29 +173,45 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               IconButton(
                 onPressed: () async {
-                  if (creatingAccount == false) {
-                    try {
-                      await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: widget.emailController.text,
-                        password: widget.passwordController.text,
-                      );
-                    } catch (error) {
-                      setState(() {
-                        errorMessage = error.toString();
-                      });
+                  if (forgetAccount == false) {
+                    if (creatingAccount == false) {
+                      try {
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: widget.emailController.text,
+                          password: widget.passwordController.text,
+                        );
+                      } catch (error) {
+                        setState(() {
+                          errorMessage = error.toString();
+                        });
+                      }
                     }
                   }
-                  if (creatingAccount == true) {
-                    try {
-                      await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: widget.emailController.text,
-                              password: widget.passwordController.text);
-                    } catch (error) {
-                      setState(() {
-                        errorMessage = error.toString();
-                      });
+                  if (forgetAccount == false) {
+                    if (creatingAccount == true) {
+                      try {
+                        await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                                email: widget.emailController.text,
+                                password: widget.passwordController.text);
+                      } catch (error) {
+                        setState(() {
+                          errorMessage = error.toString();
+                        });
+                      }
                     }
+                  }
+
+                  if (forgetAccount == true) {
+                    // var forgetMail =
+                    //     widget.forgetPasswordController.text.trim();
+                    await FirebaseAuth.instance.sendPasswordResetEmail(
+                        email: widget.forgetPasswordController.text.trim());
+                    widget.forgetPasswordController.clear;
+
+                    setState(() {
+                      forgetAccount = false;
+                    });
                   }
                 },
                 icon: const Icon(
@@ -170,34 +219,37 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 iconSize: 70,
               ),
-              const SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    creatingAccount == false ? 'Nie masz jeszcze konta?' : '',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                    ),
+                    forgetAccount == false
+                        ? 'Nie pamiętasz hasła ?'
+                        : 'Pamiętam hasło',
+                    style: GoogleFonts.lato(color: Colors.grey, fontSize: 15),
                   ),
                   TextButton(
                     onPressed: () {
-                      if (creatingAccount == false) {
+                      if (forgetAccount == false) {
                         return setState(() {
-                          creatingAccount = true;
+                          forgetAccount = true;
                         });
                       }
 
-                      return setState(() {
-                        creatingAccount = false;
-                      });
+                      if (forgetAccount == true) {
+                        return setState(() {
+                          forgetAccount = false;
+                        });
+                      }
                     },
                     child: Text(
-                      creatingAccount == false
-                          ? 'Utwórz konto'
-                          : 'Mam już konto!',
-                      style: const TextStyle(
-                          color: Colors.orange, fontWeight: FontWeight.bold),
+                      forgetAccount == false
+                          ? 'Przypomnij hasło'
+                          : 'Wróć do logowania',
+                      style: GoogleFonts.lato(
+                          color: Colors.orangeAccent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
                     ),
                   ),
                 ],

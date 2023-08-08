@@ -1,6 +1,10 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:skarbonka_v2/app/features/home/my_account/cubit/my_account_cubit.dart';
+import 'package:skarbonka_v2/app/features/home/my_account/page/img_picker.dart';
+import 'package:skarbonka_v2/app/repositories/profile_image_repository.dart';
 import 'package:skarbonka_v2/app/repositories/want_spend_repository.dart';
 
 class MyAccountPageContent extends StatefulWidget {
@@ -21,6 +25,20 @@ var isCreatingValue = false;
 var hiden = true;
 
 class _MyAccountPageContentState extends State<MyAccountPageContent> {
+  Uint8List? image;
+
+  void selectedImage() async {
+    Uint8List img = await pickImage(ImageSource.gallery);
+
+    setState(() {
+      image = img;
+    });
+  }
+
+  // void saveProfileImage() async {
+  //   String ref = await
+  // }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -77,45 +95,33 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                       Stack(
                         alignment: Alignment.center,
                         children: [
-                          Container(
-                            width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white),
-                              boxShadow: [
-                                BoxShadow(
-                                  spreadRadius: 2,
-                                  blurRadius: 10,
-                                  color: Colors.black.withOpacity(0.4),
-                                ),
-                              ],
-                              shape: BoxShape.circle,
-                              image: const DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage('images/shrek.png'),
+                          if (image != null)
+                            CircleAvatar(
+                              radius: 64,
+                              backgroundImage: MemoryImage(image!),
+                            ),
+                          if (image == null)
+                            CircleAvatar(
+                              radius: 64,
+                              backgroundColor: Colors.orange.shade300,
+                              child: const Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.white,
                               ),
                             ),
-                          ),
                           Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              width: 45,
-                              height: 45,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border:
-                                    Border.all(width: 2, color: Colors.white),
+                            bottom: -10,
+                            right: -5,
+                            child: IconButton(
+                              onPressed: () {
+                                selectedImage();
+                                ProfileImageRepository()
+                                    .saveProfileImage(file: image!);
+                              },
+                              icon: const Icon(
+                                Icons.add_a_photo_sharp,
                                 color: Colors.orange,
-                              ),
-                              child: Center(
-                                child: IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.add_a_photo_sharp,
-                                    color: Colors.white,
-                                  ),
-                                ),
                               ),
                             ),
                           )
