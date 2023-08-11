@@ -1,6 +1,12 @@
+import 'dart:html';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:skarbonka_v2/app/features/home/my_account/cubit/my_account_cubit.dart';
+import 'package:skarbonka_v2/app/repositories/profile_image_repository.dart';
 import 'package:skarbonka_v2/app/repositories/want_spend_repository.dart';
 
 class MyAccountPageContent extends StatefulWidget {
@@ -15,12 +21,16 @@ class MyAccountPageContent extends StatefulWidget {
   State<MyAccountPageContent> createState() => _MyAccountPageContentState();
 }
 
-var earningsController = '';
-var savingsController = '';
+final earningsController = TextEditingController();
+final savingsController = TextEditingController();
 var isCreatingValue = false;
 var hiden = true;
 
 class _MyAccountPageContentState extends State<MyAccountPageContent> {
+  // Uint8List? image;
+  File? pickedFile;
+  ImagePicker imagePicker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -51,7 +61,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                 child: Text('Something went wrong: ${state.errorMessage}'),
               );
             }
-            final documents = state.documents;
+            final wantSpendItemModels = state.wantSpendDocuments;
             return Center(
               child: ListView(
                 children: [
@@ -77,44 +87,39 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                       Stack(
                         alignment: Alignment.center,
                         children: [
-                          Container(
-                            width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white),
-                              boxShadow: [
-                                BoxShadow(
-                                  spreadRadius: 2,
-                                  blurRadius: 10,
-                                  color: Colors.black.withOpacity(0.4),
-                                ),
-                              ],
-                              shape: BoxShape.circle,
-                              image: const DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage('images/shrek.png'),
-                              ),
+                          // if (image != null)
+                          CircleAvatar(
+                            radius: 64,
+                          ),
+                          // if (image == null)
+                          CircleAvatar(
+                            radius: 64,
+                            backgroundColor: Colors.grey.shade400,
+                            child: const Icon(
+                              Icons.person,
+                              size: 60,
+                              color: Colors.white,
                             ),
                           ),
                           Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              width: 45,
-                              height: 45,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border:
-                                    Border.all(width: 2, color: Colors.white),
-                                color: Colors.orange,
-                              ),
-                              child: Center(
-                                child: IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.add_a_photo_sharp,
-                                    color: Colors.white,
-                                  ),
+                            bottom: -0,
+                            right: -0,
+                            child: CircleAvatar(
+                              backgroundColor: Get.isDarkMode
+                                  ? Colors.grey.shade800
+                                  : Colors.white,
+                              child: IconButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) =>
+                                          selectedAddPicMethod());
+                                },
+                                icon: Icon(
+                                  // image == null
+                                  //     ? Icons.add_a_photo_outlined :
+                                  Icons.edit,
+                                  color: Colors.orange,
                                 ),
                               ),
                             ),
@@ -131,11 +136,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                               Container(
                                 margin: const EdgeInsets.all(5),
                                 child: TextField(
-                                  onChanged: (value) {
-                                    setState(() {
-                                      earningsController = value;
-                                    });
-                                  },
+                                  controller: earningsController,
                                   decoration: InputDecoration(
                                     label: const Text(
                                       'Zarabiam',
@@ -143,11 +144,10 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                     ),
                                     hintText: 'Podaj swoje wynagrodzenie.',
                                     suffixIcon: const Icon(Icons.paid,
-                                        color:
-                                            Color.fromARGB(255, 222, 174, 0)),
+                                        color: Colors.orange),
                                     border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30)),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -155,11 +155,7 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                               Container(
                                 margin: const EdgeInsets.all(5),
                                 child: TextField(
-                                  onChanged: (value) {
-                                    setState(() {
-                                      savingsController = value;
-                                    });
-                                  },
+                                  controller: savingsController,
                                   decoration: InputDecoration(
                                     label: const Text(
                                       'Oszczędzam',
@@ -168,49 +164,20 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                     hintText:
                                         'Podaj kwote jaką chcesz zaoszczędzić.',
                                     suffixIcon: const Icon(Icons.savings,
-                                        color:
-                                            Color.fromARGB(255, 222, 174, 0)),
+                                        color: Colors.orange),
                                     border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30)),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
                                   ),
                                 ),
                               ),
                             Column(
                               children: [
-                                if (documents != null)
-                                  for (final document in documents) ...[
-                                    if (isCreatingValue == false)
-                                      Container(
-                                        padding: const EdgeInsets.all(5),
-                                        margin: const EdgeInsets.all(5),
-                                        width: width * 0.8,
-                                        height: height * 0.10,
-                                        decoration: BoxDecoration(
-                                          border:
-                                              Border.all(color: Colors.orange),
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                                'Miesięcznie do wydania mam: '),
-                                            Text(
-                                              '${document.value} PLN',
-                                              style: const TextStyle(
-                                                  fontSize: 30,
-                                                  color: Colors.red,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                for (final document in wantSpendItemModels) ...[
+                                  if (isCreatingValue == false)
                                     Container(
-                                      margin: const EdgeInsets.all(5),
                                       padding: const EdgeInsets.all(5),
+                                      margin: const EdgeInsets.all(5),
                                       width: width * 0.8,
                                       height: height * 0.10,
                                       decoration: BoxDecoration(
@@ -223,40 +190,63 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           const Text(
-                                              'Miesięcznie oszczędzam: '),
+                                              'Miesięcznie do wydania mam: '),
                                           Text(
-                                            '${document.saving} PLN',
+                                            '${document.value} PLN',
                                             style: const TextStyle(
                                                 fontSize: 30,
-                                                color: Color.fromARGB(
-                                                    255, 24, 131, 28),
+                                                color: Colors.red,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    if (isCreatingValue == false)
-                                      Container(
-                                        margin: const EdgeInsets.only(
-                                            top: 10, bottom: 10),
-                                        child: ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              context
-                                                  .read<MyAccountCubit>()
-                                                  .remove(
-                                                      documentId: document.id);
-                                              isCreatingValue = true;
-                                            });
-                                          },
-                                          child: const Text(
-                                            'Zmień',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
+                                  Container(
+                                    margin: const EdgeInsets.all(5),
+                                    padding: const EdgeInsets.all(5),
+                                    width: width * 0.8,
+                                    height: height * 0.10,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.orange),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        const Text('Miesięcznie oszczędzam: '),
+                                        Text(
+                                          '${document.saving} PLN',
+                                          style: const TextStyle(
+                                              fontSize: 30,
+                                              color: Color.fromARGB(
+                                                  255, 24, 131, 28),
+                                              fontWeight: FontWeight.bold),
                                         ),
-                                      )
-                                  ],
+                                      ],
+                                    ),
+                                  ),
+                                  if (isCreatingValue == false)
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                          top: 10, bottom: 10),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            context
+                                                .read<MyAccountCubit>()
+                                                .remove(
+                                                    documentId: document.id);
+                                            isCreatingValue = true;
+                                          });
+                                        },
+                                        child: const Text(
+                                          'Zmień',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    )
+                                ],
                               ],
                             )
                           ],
@@ -275,9 +265,9 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                                         .read<MyAccountCubit>()
                                         .addSubtractionResult(
                                             earningsController:
-                                                earningsController,
+                                                earningsController.text,
                                             savingsController:
-                                                savingsController);
+                                                savingsController.text);
 
                                     isCreatingValue = false;
                                   });
@@ -308,4 +298,84 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
       ),
     );
   }
+
+  selectedAddPicMethod() {
+    return SizedBox(
+      height: 150,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(
+          children: [
+            Text(
+              'Wybierz zdjęcie profilowe',
+              style: GoogleFonts.lato(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            print('Aparat');
+                            takePhoto(ImageSource.camera);
+                          });
+                        },
+                        iconSize: 45,
+                        icon: const Icon(
+                          Icons.camera,
+                          color: Colors.orange,
+                        ),
+                      ),
+                      Text(
+                        'Aparat',
+                        style: GoogleFonts.lato(
+                          color: Colors.orange,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 65,
+                  ),
+                  Column(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            print('Galeria');
+                            takePhoto(ImageSource.gallery);
+                          });
+                        },
+                        iconSize: 45,
+                        icon: const Icon(
+                          Icons.photo_library_outlined,
+                          color: Colors.orange,
+                        ),
+                      ),
+                      Text(
+                        'Galeria',
+                        style: GoogleFonts.lato(
+                            fontWeight: FontWeight.bold, color: Colors.orange),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> takePhoto(ImageSource source) async {}
 }

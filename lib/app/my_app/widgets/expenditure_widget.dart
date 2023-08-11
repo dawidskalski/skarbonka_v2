@@ -71,9 +71,9 @@ class ExpenditureWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(2.0),
+                      padding: const EdgeInsets.all(2.0),
                       child: Text(
-                        '${cost} PLN',
+                        '$cost PLN',
                         style:
                             const TextStyle(color: Colors.white, fontSize: 16),
                         textAlign: TextAlign.center,
