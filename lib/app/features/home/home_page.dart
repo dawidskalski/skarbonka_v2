@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:skarbonka_v2/app/cubit/root_cubit.dart';
@@ -48,8 +49,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: _myAppBar(context, notifyHelper),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.orange,
         currentIndex: selectedIndex,
-        selectedItemColor: Get.isDarkMode ? Colors.white : Colors.black,
         onTap: (value) {
           setState(() {
             selectedIndex = value;
@@ -122,7 +123,9 @@ class _HomePageState extends State<HomePage> {
 
 _myAppBar(BuildContext context, notifyHelper) {
   return AppBar(
-    leading: GestureDetector(
+    backgroundColor:
+        Get.isDarkMode ? Colors.grey.shade800 : Colors.grey.shade50,
+    leading: InkWell(
       onTap: () {
         ThemeServices().switchThemeMode();
         notifyHelper.displayNotification(
@@ -140,17 +143,17 @@ _myAppBar(BuildContext context, notifyHelper) {
     title: Text(
       '#Skarbonka',
       style: GoogleFonts.pacifico(
-          color: Colors.white54, fontSize: 30, fontStyle: FontStyle.italic),
+          color: Get.isDarkMode ? Colors.white54 : Colors.black38,
+          fontSize: 30,
+          fontStyle: FontStyle.italic),
     ),
     actions: [
       IconButton(
-          color: Colors.orange,
           onPressed: () {
             context.read<RootCubit>().signOut();
           },
           icon: const Icon(
             Icons.logout,
-            color: Colors.white,
           ))
     ],
   );

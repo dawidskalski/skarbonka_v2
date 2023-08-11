@@ -1,9 +1,11 @@
+import 'dart:html';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:skarbonka_v2/app/features/home/my_account/cubit/my_account_cubit.dart';
-import 'package:skarbonka_v2/app/features/home/my_account/page/img_picker.dart';
 import 'package:skarbonka_v2/app/repositories/profile_image_repository.dart';
 import 'package:skarbonka_v2/app/repositories/want_spend_repository.dart';
 
@@ -25,19 +27,9 @@ var isCreatingValue = false;
 var hiden = true;
 
 class _MyAccountPageContentState extends State<MyAccountPageContent> {
-  Uint8List? image;
-
-  void selectedImage() async {
-    Uint8List img = await pickImage(ImageSource.gallery);
-
-    setState(() {
-      image = img;
-    });
-  }
-
-  // void saveProfileImage() async {
-  //   String ref = await
-  // }
+  // Uint8List? image;
+  File? pickedFile;
+  ImagePicker imagePicker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -95,33 +87,40 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
                       Stack(
                         alignment: Alignment.center,
                         children: [
-                          if (image != null)
-                            CircleAvatar(
-                              radius: 64,
-                              backgroundImage: MemoryImage(image!),
+                          // if (image != null)
+                          CircleAvatar(
+                            radius: 64,
+                          ),
+                          // if (image == null)
+                          CircleAvatar(
+                            radius: 64,
+                            backgroundColor: Colors.grey.shade400,
+                            child: const Icon(
+                              Icons.person,
+                              size: 60,
+                              color: Colors.white,
                             ),
-                          if (image == null)
-                            CircleAvatar(
-                              radius: 64,
-                              backgroundColor: Colors.orange.shade300,
-                              child: const Icon(
-                                Icons.person,
-                                size: 60,
-                                color: Colors.white,
-                              ),
-                            ),
+                          ),
                           Positioned(
-                            bottom: -10,
-                            right: -5,
-                            child: IconButton(
-                              onPressed: () {
-                                selectedImage();
-                                ProfileImageRepository()
-                                    .saveProfileImage(file: image!);
-                              },
-                              icon: const Icon(
-                                Icons.add_a_photo_sharp,
-                                color: Colors.orange,
+                            bottom: -0,
+                            right: -0,
+                            child: CircleAvatar(
+                              backgroundColor: Get.isDarkMode
+                                  ? Colors.grey.shade800
+                                  : Colors.white,
+                              child: IconButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) =>
+                                          selectedAddPicMethod());
+                                },
+                                icon: Icon(
+                                  // image == null
+                                  //     ? Icons.add_a_photo_outlined :
+                                  Icons.edit,
+                                  color: Colors.orange,
+                                ),
                               ),
                             ),
                           )
@@ -299,4 +298,84 @@ class _MyAccountPageContentState extends State<MyAccountPageContent> {
       ),
     );
   }
+
+  selectedAddPicMethod() {
+    return SizedBox(
+      height: 150,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(
+          children: [
+            Text(
+              'Wybierz zdjęcie profilowe',
+              style: GoogleFonts.lato(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            print('Aparat');
+                            takePhoto(ImageSource.camera);
+                          });
+                        },
+                        iconSize: 45,
+                        icon: const Icon(
+                          Icons.camera,
+                          color: Colors.orange,
+                        ),
+                      ),
+                      Text(
+                        'Aparat',
+                        style: GoogleFonts.lato(
+                          color: Colors.orange,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 65,
+                  ),
+                  Column(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            print('Galeria');
+                            takePhoto(ImageSource.gallery);
+                          });
+                        },
+                        iconSize: 45,
+                        icon: const Icon(
+                          Icons.photo_library_outlined,
+                          color: Colors.orange,
+                        ),
+                      ),
+                      Text(
+                        'Galeria',
+                        style: GoogleFonts.lato(
+                            fontWeight: FontWeight.bold, color: Colors.orange),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> takePhoto(ImageSource source) async {}
 }
